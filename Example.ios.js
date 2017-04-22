@@ -8,16 +8,6 @@ import {
 } from 'react-native';
 
 class AutocompleteExample extends Component {
-  static renderCosmetic(cosmetic) {
-    // const { title, director, opening_crawl, episode_id } = film;
-    const { name , description } = cosmetic;
-
-    return (
-      <View>
-        <Text style={styles.titleText}>{name} , {description}</Text>
-      </View>
-    );
-  }
 
   constructor(props) {
     super(props);
@@ -32,23 +22,30 @@ class AutocompleteExample extends Component {
       console.log(json)
       this.setState({ cosmetics :json });
     });
-    
-
   }
 
   findCosmetic(query) {
     if (query === '') {
       return [];
     }
-
     const { cosmetics } = this.state;
     const regex = new RegExp(`${query.trim()}`, 'i');
     return cosmetics.filter(cosmetic => cosmetic.name.search(regex) >= 0);
   }
 
+  renderCosmetic(cosmetic) {
+    const { name , description } = cosmetic;
+    return (
+      <View>
+        <Text style={styles.titleText}>{name} , {description}</Text>
+      </View>
+    );
+  }
+
   render() {
     const { query } = this.state;
     const cosmetics = this.findCosmetic(query);
+
     const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
 
     return (
@@ -60,7 +57,7 @@ class AutocompleteExample extends Component {
           data={cosmetics.length === 1 && comp(query, cosmetics[0].name) ? [] : cosmetics}
           defaultValue={query}
           onChangeText={text => this.setState({ query: text })}
-          placeholder="Enter Star Wars film title"
+          placeholder="Enter A Cosmetic Name"
           renderItem={({ name}) => (
             <TouchableOpacity onPress={() => this.setState({ query: name})}>
               <Text style={styles.itemText}>
@@ -69,9 +66,10 @@ class AutocompleteExample extends Component {
             </TouchableOpacity>
           )}
         />
+
         <View style={styles.descriptionContainer}>
           {cosmetics.length > 0 ? (
-            AutocompleteExample.renderCosmetic(cosmetics[0])
+            this.renderCosmetic(cosmetics[0])
           ) : (
             <Text style={styles.infoText}>
               ENTER COSMETIC NAME {1}
