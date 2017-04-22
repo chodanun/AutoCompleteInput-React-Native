@@ -7,17 +7,14 @@ import {
   View
 } from 'react-native';
 
-const API = 'https://swapi.co/api';
-const ROMAN = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII'];
-
 class AutocompleteExample extends Component {
-  static renderFilm(film) {
+  static renderCosmetic(cosmetic) {
     // const { title, director, opening_crawl, episode_id } = film;
-    const { name } = film;
+    const { name , description } = cosmetic;
 
     return (
       <View>
-        <Text style={styles.titleText}>{name}</Text>
+        <Text style={styles.titleText}>{name} , {description}</Text>
       </View>
     );
   }
@@ -25,7 +22,7 @@ class AutocompleteExample extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      films: [],
+      cosmetics: [],
       query: ''
     };
   }
@@ -33,25 +30,25 @@ class AutocompleteExample extends Component {
   componentDidMount() {
     fetch(`http://localhost:8000/api/search/all/`).then(res => res.json()).then((json) => {
       console.log(json)
-      this.setState({ films :json });
+      this.setState({ cosmetics :json });
     });
     
 
   }
 
-  findFilm(query) {
+  findCosmetic(query) {
     if (query === '') {
       return [];
     }
 
-    const { films } = this.state;
+    const { cosmetics } = this.state;
     const regex = new RegExp(`${query.trim()}`, 'i');
-    return films.filter(film => film.name.search(regex) >= 0);
+    return cosmetics.filter(cosmetic => cosmetic.name.search(regex) >= 0);
   }
 
   render() {
     const { query } = this.state;
-    const films = this.findFilm(query);
+    const cosmetics = this.findCosmetic(query);
     const comp = (a, b) => a.toLowerCase().trim() === b.toLowerCase().trim();
 
     return (
@@ -60,7 +57,7 @@ class AutocompleteExample extends Component {
           autoCapitalize="none"
           autoCorrect={false}
           containerStyle={styles.autocompleteContainer}
-          data={films.length === 1 && comp(query, films[0].name) ? [] : films}
+          data={cosmetics.length === 1 && comp(query, cosmetics[0].name) ? [] : cosmetics}
           defaultValue={query}
           onChangeText={text => this.setState({ query: text })}
           placeholder="Enter Star Wars film title"
@@ -73,11 +70,11 @@ class AutocompleteExample extends Component {
           )}
         />
         <View style={styles.descriptionContainer}>
-          {films.length > 0 ? (
-            AutocompleteExample.renderFilm(films[0])
+          {cosmetics.length > 0 ? (
+            AutocompleteExample.renderCosmetic(cosmetics[0])
           ) : (
             <Text style={styles.infoText}>
-              Enter Title of a Star Wars movie
+              ENTER COSMETIC NAME {1}
             </Text>
           )}
         </View>
